@@ -2,14 +2,7 @@ import User from "../models/User.js";
 
 export const getAllUsers = (req, res) => {
   User.findAll({ attributes: { exclude: ["password"] } })
-    .then((users) => {
-      users.forEach((user) => {
-        const imageUrl = user.photo;
-        const newImageUrl = `${req.protocol}://${req.get("host")}/${imageUrl}`;
-        user.photo = newImageUrl;
-      });
-      res.status(200).json(users);
-    })
+    .then((users) => res.status(200).json(users))
     .catch((err) => res.status(400).json(err));
 };
 
@@ -18,15 +11,51 @@ export const getUserById = (req, res) => {
     where: { id: req.params.id },
     attributes: { exclude: ["password"] },
   })
-    .then((user) => {
-      const imageUrl = user.photo;
-      const newImageUrl = `${req.protocol}://${req.get("host")}/${imageUrl}`;
-      user.photo = newImageUrl;
-      res.status(200).json({ user });
-    })
+    .then((user) => res.status(200).json(user))
     .catch((err) => res.status(404).json({ err }));
 };
 
-export const updateUser = (req, res) => {};
+export const updateUser = (req, res) => {
+  let userProfile = null;
 
-export const deleteUser = (req, res) => {};
+  userProfile = {
+    email: req.body.email,
+    last_name: req.body.lastName,
+    first_name: req.body.firstName,
+    gender: req.body.gender,
+    phone: req.body.phone,
+    city: req.body.city,
+    country: req.body.country,
+    birthdate: req.body.birthdate,
+    category: req.body.category,
+    photo: req.body.photo,
+    password: req.body.password,
+  };
+
+  // on hash le password si celle ci existe
+  if (userProfile.password !== undefined) {
+    bcrypt.hash(req.body.password, 10).then((hash) => {
+      userProfile.password = hash;
+      User.update(userProfile, { where: { id: req.params.id } })
+        .then(() => res.status(200).json({ message: "Profile modifié." }))
+        .catch((err) => res.status(400).json({ err }));
+    });
+  }
+  // mise à jour de l'utilisateur
+  User.update(userProfile, { where: { id: req.params.id } })
+    .then(() => res.status(200).json({ message: "Profile modifié." }))
+    .catch((err) => res.status(400).json({ err }));
+};
+
+export const deleteUser = (req, res) => {
+  User.findOne(
+    { where: { id: req.params.id } },
+    { attributes: { exclude: ["password"] } }
+  )
+    .then(() => {
+      User.destroy({ where: { id: req.params.id } })
+        .then(() => res.status(200).json({ message: "Utilisateur supprimé." }))
+        .catch((err) => res.status(404).json({ err }));
+    })
+    .catch((err) => res.status(400).json({ err }));
+};

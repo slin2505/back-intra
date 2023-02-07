@@ -19,6 +19,7 @@ export const signUp = (req, res) => {
         country: req.body.country,
         birthdate: req.body.birthdate,
         category: req.body.category,
+        photo: req.body.photo,
         password: hash,
       };
 

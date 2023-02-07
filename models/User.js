@@ -69,7 +69,6 @@ const User = db.define("user", {
 
   photo: {
     type: DataTypes.STRING,
-    defaultValue: "images/basicUser.png",
   },
 
   is_admin: {
