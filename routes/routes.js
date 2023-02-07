@@ -12,7 +12,7 @@ import isAdmin from "../middlewares/isAdmin.js";
 const router = express.Router();
 
 // Auth
-router.post("/signup", signUp);
+router.post("/signup", auth, isAdmin, signUp);
 router.post("/signin", signIn);
 
 // CRUD User
