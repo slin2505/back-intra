@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const signUp = (req, res) => {
   if (req.body.password === undefined) {
@@ -33,7 +34,8 @@ export const signUp = (req, res) => {
 
 export const signIn = (req, res) => {
   // On récupère l'utilisateur dans la BDD et on compare les passwords
-  User.findOne({ email: req.body.email })
+
+  User.findOne({ where: { email: req.body.email } })
     .then((user) => {
       if (!user) {
         return res.status(401).json({ err: "Utilisateur inexistant !" });
@@ -44,10 +46,10 @@ export const signIn = (req, res) => {
             if (!valid) {
               return res.status(401).json({ err: "Mot de passe incorrect !" });
             } else {
-              res.status(200).json({
-                userId: user._id,
+              return res.status(200).json({
+                userId: user.id,
                 token: jwt.sign(
-                  { userId: user._id },
+                  { userId: user.id },
                   process.env.passwordToken,
                   { expiresIn: "24h" }
                 ),

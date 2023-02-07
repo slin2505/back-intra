@@ -14,7 +14,7 @@ const auth = (req, res, next) => {
       next();
     }
   } catch (err) {
-    res.status(401).json({ err: err | "Requête non authentifiée !" });
+    res.status(401).json("Requête non authentifiée !");
   }
 };
 
