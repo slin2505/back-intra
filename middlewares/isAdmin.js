@@ -2,8 +2,12 @@ import User from "../models/User.js";
 
 const isAdmin = (req, res, next) => {
   try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.verify(token, process.env.passwordToken);
+    const userId = decodedToken.userId;
+
     User.findOne({
-      where: { id: req.params.id },
+      where: { id: userId },
       attributes: { exclude: ["password"] },
     })
       .then((user) => {
@@ -16,7 +20,7 @@ const isAdmin = (req, res, next) => {
       })
       .catch((err) => res.status(404).json({ err }));
   } catch (err) {
-    res.status(401).json({ err: err | "Requête non authentifiée !" });
+    res.status(401).json("Requête non authentifiée !");
   }
 };
 
