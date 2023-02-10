@@ -21,6 +21,7 @@ export const signUp = (req, res) => {
         birthdate: req.body.birthdate,
         category: req.body.category,
         photo: req.body.photo,
+        is_admin: req.body.isAdmin,
         password: hash,
       };
 

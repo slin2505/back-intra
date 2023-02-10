@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 const isAdmin = (req, res, next) => {
   try {
@@ -11,7 +12,7 @@ const isAdmin = (req, res, next) => {
       attributes: { exclude: ["password"] },
     })
       .then((user) => {
-        const isUserAdmin = user.isAdmin;
+        const isUserAdmin = user.is_admin;
         if (isUserAdmin === false) {
           throw "Action non autorisée !";
         } else {

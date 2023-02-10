@@ -31,6 +31,7 @@ export const updateUser = (req, res) => {
     category: req.body.category,
     photo: req.body.photo,
     password: req.body.password,
+    is_admin: req.body.isAdmin,
   };
 
   // on hash le password si celle ci existe
