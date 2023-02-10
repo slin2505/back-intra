@@ -42,11 +42,12 @@ export const updateUser = (req, res) => {
         .then(() => res.status(200).json({ message: "Profile modifié." }))
         .catch((err) => res.status(400).json({ err }));
     });
+  } else {
+    // mise à jour de l'utilisateur
+    User.update(userProfile, { where: { id: req.params.id } })
+      .then(() => res.status(200).json({ message: "Profile modifié." }))
+      .catch((err) => res.status(400).json({ err }));
   }
-  // mise à jour de l'utilisateur
-  User.update(userProfile, { where: { id: req.params.id } })
-    .then(() => res.status(200).json({ message: "Profile modifié." }))
-    .catch((err) => res.status(400).json({ err }));
 };
 
 export const deleteUser = (req, res) => {
